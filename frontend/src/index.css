@@ -15,4 +15,8 @@ html {
 	src: local("NeueMetana"),
 		url("./fonts/NeueMetana-Bold.otf") format("truetype");
 	font-weight: bold;
+
+	font-family: "Open Sans";
+	src: local("Open Sans"), url("./fonts/Open Sans.ttf") format("truetype");
+	font-weight: normal;
 }

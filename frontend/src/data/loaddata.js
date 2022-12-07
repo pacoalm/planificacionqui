@@ -1,18 +1,19 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { AppContext } from "../context/appcontext";
 
-const centros = [
-    {
-        codigo: "07",
-        descripcion: "Hospital San Juan de Dios Tenerife",
-        quirofanos: 5,
-        ambulatorio: true,
-        urpa: true,
-        preanestesia: true,
-    },
-];
 const LoadData = () => {
-    return <div></div>;
+	const { dispatch } = useContext(AppContext);
+	const [loading, setLoading] = useState(true);
+
+	useEffect(() => {
+		setLoading(false);
+	}, []);
+
+	if (loading) {
+		return <div>Cargando datos...</div>;
+	} else {
+		return <></>;
+	}
 };
 
 export default LoadData;

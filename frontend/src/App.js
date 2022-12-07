@@ -1,21 +1,30 @@
-import React, { useContext } from "react";
+import React, { useState } from "react";
 import "./App.css";
-import { AppContext } from "./context/appcontext";
+
 import Login from "./pages/login";
+import LoadData from "./data/loaddata";
+import { AppProvider } from "./context/appcontext";
 import PrimarySearchAppBar from "./components/header";
 
 function App() {
-    const { loginOk } = useContext(AppContext);
+	const [loginOk, setLoginOk] = useState(false);
 
-    if (!loginOk) {
-        return <Login />;
-    } else {
-        return (
-            <div className="App">
-                <PrimarySearchAppBar />
-            </div>
-        );
-    }
+	const handleLoginOk = (state) => {
+		setLoginOk(state);
+	};
+
+	return (
+		<AppProvider>
+			{!loginOk && <Login handleLoginOk={handleLoginOk} />}
+			{loginOk && (
+				<div className="App">
+					<LoadData />
+					<PrimarySearchAppBar handleLoginOk={handleLoginOk} />
+					<div>ESTO ES UNA PRUEBA</div>
+				</div>
+			)}
+		</AppProvider>
+	);
 }
 
 export default App;
