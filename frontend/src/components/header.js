@@ -14,130 +14,165 @@ import MoreIcon from "@mui/icons-material/MoreVert";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import { AppContext } from "../context/appcontext";
+import Sidebar from "./sidebar";
+import Config from "./forms/config";
 
 import "./header.css";
 
 export default function PrimarySearchAppBar(props) {
-	const [nombreCentro, setNombreCentro] = useState("");
+    const [nombreCentro, setNombreCentro] = useState("");
+    const [anchorEl, setAnchorEl] = React.useState(null);
+    const [sidebarOpen, setSidebarOpen] = useState(false);
 
-	const { dispatch, usuarioPQ, centros } = useContext(AppContext);
+    const [configOpen, setConfigOpen] = useState(false);
 
-	const [anchorEl, setAnchorEl] = React.useState(null);
-	const menuId = "primary-search-account-menu";
+    const { dispatch, usuarioPQ, centros } = useContext(AppContext);
 
-	const isMenuOpen = Boolean(anchorEl);
+    const handleFormConfigClose = () => {
+        setConfigOpen(false);
+    };
 
-	const handleProfileMenuOpen = (event) => {
-		setAnchorEl(event.currentTarget);
-	};
-	const handleProfileMenuClose = (event) => {
-		setAnchorEl(null);
-	};
+    const menuId = "primary-search-account-menu";
 
-	const handleProfileCloseSession = (event) => {
-		setAnchorEl(null);
-		props.handleLoginOk(false);
-	};
+    const isMenuOpen = Boolean(anchorEl);
 
-	useEffect(() => {
-		const centro = centros.find((item) => item.codigo === usuarioPQ.codCentro);
-		setNombreCentro(centro.descripcion);
-	}, []);
+    const handleSidebarMenuOpen = (event) => {
+        setSidebarOpen(true);
+    };
+    const handleSidebarMenuClose = (event, accion) => {
+        setSidebarOpen(false);
 
-	const renderMenuProfile = (
-		<Menu
-			anchorEl={anchorEl}
-			anchorOrigin={{
-				vertical: "top",
-				horizontal: "right",
-			}}
-			id={menuId}
-			keepMounted
-			transformOrigin={{
-				vertical: "top",
-				horizontal: "right",
-			}}
-			open={isMenuOpen}
-			onClose={handleProfileMenuClose}
-		>
-			<MenuItem
-				sx={{ fontFamily: "Open Sans", fontSize: 14 }}
-				onClick={handleProfileMenuClose}
-			>
-				Mi cuenta
-			</MenuItem>
-			<MenuItem
-				sx={{ fontFamily: "Open Sans", fontSize: 14 }}
-				onClick={handleProfileCloseSession}
-			>
-				Cerrar sesión
-			</MenuItem>
-		</Menu>
-	);
+        if (accion === 1) setConfigOpen(true);
+    };
 
-	return (
-		<React.Fragment>
-			<AppBar component="nav" sx={{ bgcolor: "navy", margin: 0 }}>
-				<Toolbar>
-					<IconButton
-						size="large"
-						edge="start"
-						color="inherit"
-						aria-label="open drawer"
-						sx={{ mr: 2 }}
-					>
-						<MenuIcon />
-					</IconButton>
-					<Typography
-						variant="h6"
-						noWrap
-						component="div"
-						sx={{
-							display: { xs: "none", sm: "block" },
-							fontFamily: "Open Sans",
-							fontSize: 22,
-						}}
-					>
-						{"Planificación Quirúrgica " + nombreCentro}
-					</Typography>
-					<Box m={2} pt={3} />
+    const handleProfileMenuOpen = (event) => {
+        setAnchorEl(event.currentTarget);
+    };
+    const handleProfileMenuClose = (event) => {
+        setAnchorEl(null);
+    };
 
-					<Box sx={{ flexGrow: 1 }} />
-					<Box sx={{ display: { xs: "none", md: "flex" } }}>
-						<IconButton
-							size="large"
-							aria-label="show 17 new notifications"
-							color="inherit"
-						>
-							<Badge badgeContent={17} color="error">
-								<NotificationsIcon />
-							</Badge>
-						</IconButton>
-						<IconButton
-							size="large"
-							edge="end"
-							aria-label="cuenta usuario actual"
-							aria-controls={menuId}
-							aria-haspopup="true"
-							onClick={handleProfileMenuOpen}
-							color="inherit"
-						>
-							<AccountCircle />
-						</IconButton>
-					</Box>
-					<Box sx={{ display: { xs: "flex", md: "none" } }}>
-						<IconButton
-							size="large"
-							aria-label="show more"
-							aria-haspopup="true"
-							color="inherit"
-						>
-							<MoreIcon />
-						</IconButton>
-					</Box>
-				</Toolbar>
-			</AppBar>
-			{renderMenuProfile}
-		</React.Fragment>
-	);
+    const handleProfileCloseSession = (event) => {
+        setAnchorEl(null);
+        props.handleLoginOk(false);
+    };
+
+    useEffect(() => {
+        const centro = centros.find(
+            (item) => item.codigo === usuarioPQ.codCentro
+        );
+        setNombreCentro(centro.descripcion);
+    }, []);
+
+    const renderMenuProfile = (
+        <Menu
+            anchorEl={anchorEl}
+            anchorOrigin={{
+                vertical: "top",
+                horizontal: "right",
+            }}
+            id={menuId}
+            keepMounted
+            transformOrigin={{
+                vertical: "top",
+                horizontal: "right",
+            }}
+            open={isMenuOpen}
+            onClose={handleProfileMenuClose}
+        >
+            <MenuItem
+                sx={{ fontFamily: "Open Sans", fontSize: 14 }}
+                onClick={handleProfileMenuClose}
+            >
+                Mi cuenta
+            </MenuItem>
+            <MenuItem
+                sx={{ fontFamily: "Open Sans", fontSize: 14 }}
+                onClick={handleProfileCloseSession}
+            >
+                Cerrar sesión
+            </MenuItem>
+        </Menu>
+    );
+
+    return (
+        <React.Fragment>
+            <AppBar component="nav" sx={{ bgcolor: "navy", margin: 0 }}>
+                <Toolbar>
+                    <IconButton
+                        size="large"
+                        edge="start"
+                        color="inherit"
+                        aria-label="open drawer"
+                        sx={{ mr: 2 }}
+                        onClick={handleSidebarMenuOpen}
+                    >
+                        <MenuIcon />
+                    </IconButton>
+                    <Typography
+                        variant="h6"
+                        noWrap
+                        component="div"
+                        sx={{
+                            display: { xs: "none", sm: "block" },
+                            fontFamily: "Open Sans",
+                            fontSize: 22,
+                        }}
+                    >
+                        {"Planificación Quirúrgica " + nombreCentro}
+                    </Typography>
+                    <Box m={2} pt={3} />
+
+                    <Box sx={{ flexGrow: 1 }} />
+                    <Box sx={{ display: { xs: "none", md: "flex" } }}>
+                        <IconButton
+                            size="large"
+                            aria-label="show 17 new notifications"
+                            color="inherit"
+                        >
+                            <Badge badgeContent={17} color="error">
+                                <NotificationsIcon />
+                            </Badge>
+                        </IconButton>
+                        <IconButton
+                            size="large"
+                            edge="end"
+                            aria-label="cuenta usuario actual"
+                            aria-controls={menuId}
+                            aria-haspopup="true"
+                            onClick={handleProfileMenuOpen}
+                            color="inherit"
+                        >
+                            <AccountCircle />
+                        </IconButton>
+                    </Box>
+                    <Box sx={{ display: { xs: "flex", md: "none" } }}>
+                        <IconButton
+                            size="large"
+                            aria-label="show more"
+                            aria-haspopup="true"
+                            color="inherit"
+                        >
+                            <MoreIcon />
+                        </IconButton>
+                    </Box>
+                </Toolbar>
+            </AppBar>
+            {renderMenuProfile}
+            {sidebarOpen && (
+                <Sidebar
+                    handleClose={(e, accion) =>
+                        handleSidebarMenuClose(e, accion)
+                    }
+                />
+            )}
+            {configOpen && (
+                <Config
+                    usuario={usuarioPQ}
+                    nombreCentro={nombreCentro}
+                    handleClose={handleFormConfigClose}
+                />
+            )}
+        </React.Fragment>
+    );
 }
