@@ -21,6 +21,8 @@ import "./header.css";
 
 export default function PrimarySearchAppBar(props) {
     const [nombreCentro, setNombreCentro] = useState("");
+    const [facility, setFacility] = useState(0);
+
     const [anchorEl, setAnchorEl] = React.useState(null);
     const [sidebarOpen, setSidebarOpen] = useState(false);
 
@@ -62,6 +64,7 @@ export default function PrimarySearchAppBar(props) {
             (item) => item.codigo === usuarioPQ.codCentro
         );
         setNombreCentro(centro.descripcion);
+        setFacility(centro.facility);
     }, []);
 
     const renderMenuProfile = (
@@ -171,6 +174,7 @@ export default function PrimarySearchAppBar(props) {
                     usuario={usuarioPQ}
                     nombreCentro={nombreCentro}
                     handleClose={handleFormConfigClose}
+                    facility={facility}
                 />
             )}
         </React.Fragment>
