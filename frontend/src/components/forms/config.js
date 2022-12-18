@@ -132,6 +132,7 @@ export default function Config(props) {
         const [selectedRow, setSelectedRow] = useState(null);
 
         const [columns, setColumns] = useState([
+            { title: "uuid", field: "UUID", hidden: true },
             { title: "Descripción", field: "DESCRIPCION" },
             { title: "Alias", field: "ALIAS" },
             {
@@ -245,6 +246,7 @@ export default function Config(props) {
                         onRowUpdate: (newData, oldData) =>
                             new Promise((resolve, reject) => {
                                 setTimeout(() => {
+                                    alert(oldData.UUID);
                                     const dataUpdate = [...ubicaciones];
                                     const index = oldData.tableData.id;
                                     dataUpdate[index] = newData;
