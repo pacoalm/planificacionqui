@@ -1,14 +1,4 @@
 import * as React from "react";
-import IconButton from "@mui/material/IconButton";
-import Button from "@mui/material/Button";
-
-import Dialog from "@mui/material/Dialog";
-import DialogActions from "@mui/material/DialogActions";
-import DialogContent from "@mui/material/DialogContent";
-
-import DialogTitle from "@mui/material/DialogTitle";
-import CloseIcon from "@mui/icons-material/Close";
-import { Typography } from "@mui/material";
 import MaterialTable from "material-table";
 import { ThemeProvider, createTheme } from "@mui/material";
 import { forwardRef } from "react";
@@ -28,15 +18,6 @@ import Remove from "@mui/icons-material/Remove";
 import SaveAlt from "@mui/icons-material/SaveAlt";
 import Search from "@mui/icons-material/Search";
 import ViewColumn from "@mui/icons-material/ViewColumn";
-import reactloading from "react-loading";
-import { AppContext } from "../../context/appcontext";
-import Tabs from "@mui/material/Tabs";
-import Tab from "@mui/material/Tab";
-import TabContext from "@mui/lab/TabContext";
-import TabList from "@mui/lab/TabList";
-import TabPanel from "@mui/lab/TabPanel";
-import Box from "@mui/material/Box";
-import Serviciosqui from "./serviciosqui";
 
 const tableIcons = {
     Add: forwardRef((props, ref) => <AddBox {...props} ref={ref} />),
@@ -65,69 +46,32 @@ const tableIcons = {
     )),
     ViewColumn: forwardRef((props, ref) => <ViewColumn {...props} ref={ref} />),
 };
-
-export default function Config(props) {
-    const { usuarioPQ } = React.useContext(AppContext);
-
-    const [ubicaciones, setUbicaciones] = React.useState([]);
-    const [tiposUbicacion, setTiposUbicacion] = React.useState({});
+export default function Rcursos(props) {
+    const [recursos, setRecursos] = React.useState([]);
     const [isLoading, setIsLoading] = React.useState(true);
-    const [defaultTab, setDefaultTab] = React.useState("ubicaciones");
 
     React.useEffect(() => {
-        const fetchUbicaciones = async () => {
+        const fetchRecursos = async () => {
             await fetch(
                 "http://" +
                     process.env.REACT_APP_API_SERVER +
                     ":" +
                     process.env.REACT_APP_API_PORT +
-                    "/api/ubicaciones/" +
+                    "/api/recursos/" +
                     props.facility
             )
                 .then((response) => response.json())
                 .then((data) => {
-                    setUbicaciones(data);
+                    setRecursos(data);
                 });
         };
 
-        const fetchTiposUbicacion = async () => {
-            await fetch(
-                "http://" +
-                    process.env.REACT_APP_API_SERVER +
-                    ":" +
-                    process.env.REACT_APP_API_PORT +
-                    "/api/tiposubicacion"
-            )
-                .then((response) => response.json())
-                .then((data) => {
-                    let arrayUbicaciones = {};
-
-                    data.map((t) => {
-                        arrayUbicaciones[t.SID] = t.DESCRIPCION;
-                    });
-
-                    setTiposUbicacion(arrayUbicaciones);
-                });
-        };
-
-        fetchTiposUbicacion();
-        fetchUbicaciones();
-        console.log(ubicaciones);
+        fetchRecursos();
+        console.log(recursos);
         setIsLoading(false);
     }, []);
 
-    //Eventos
-
-    const handleChangeTab = (event, newValue) => {
-        setDefaultTab(newValue);
-    };
-
-    const handleClose = (event, accion) => {
-        if (accion === 1) props.handleClose();
-    };
-    const defaultMaterialTheme = createTheme();
-
-    function GridUbicaciones() {
+    function GridRecursos() {
         const { useState } = React;
         const [selectedRow, setSelectedRow] = useState(null);
 
@@ -135,19 +79,16 @@ export default function Config(props) {
             { title: "uuid", field: "UUID", hidden: true },
             { title: "Descripción", field: "DESCRIPCION" },
             { title: "Alias", field: "ALIAS" },
+
             {
-                title: "Tipo",
-                field: "TIPO",
-                type: "numeric",
-                lookup: tiposUbicacion,
-            },
-            {
-                title: "Activa",
-                field: "ACTIVA",
+                title: "Activo",
+                field: "ACTIVO",
                 initialEditValue: true,
                 type: "boolean",
             },
         ]);
+
+        const defaultMaterialTheme = createTheme();
 
         return (
             <ThemeProvider theme={defaultMaterialTheme}>
@@ -204,7 +145,7 @@ export default function Config(props) {
                     icons={tableIcons}
                     title="Ubicaciones quirúrgicas"
                     columns={columns}
-                    data={ubicaciones}
+                    data={recursos}
                     editable={{
                         onRowAdd: (newData) =>
                             new Promise((resolve, reject) => {
@@ -215,13 +156,12 @@ export default function Config(props) {
                                     process.env.REACT_APP_API_SERVER +
                                     ":" +
                                     process.env.REACT_APP_API_PORT +
-                                    "/api/ubicacion";
+                                    "/api/recursos";
                                 let postData = {};
                                 postData["facility"] = props.facility;
                                 postData["DESCRIPCION"] = newData.DESCRIPCION;
                                 postData["ALIAS"] = newData.ALIAS;
-                                postData["TIPO"] = newData.TIPO;
-                                postData["ACTIVA"] = newData.ACTIVA ? "1" : "0";
+                                postData["ACTIVO"] = newData.ACTIVO ? "1" : "0";
 
                                 const fetchData = async () => {
                                     const response = await fetch(url, {
@@ -237,17 +177,17 @@ export default function Config(props) {
 
                                 fetchData();
 
-                                setUbicaciones([...ubicaciones, newData]);
+                                setRecursos([...recursos, newData]);
 
                                 resolve();
                             }),
                         onRowUpdate: (newData, oldData) =>
                             new Promise((resolve, reject) => {
                                 setTimeout(() => {
-                                    const dataUpdate = [...ubicaciones];
+                                    const dataUpdate = [...recursos];
                                     const index = oldData.tableData.id;
                                     dataUpdate[index] = newData;
-                                    setUbicaciones([...dataUpdate]);
+                                    setRecursos([...dataUpdate]);
 
                                     resolve();
                                 }, 1000);
@@ -255,10 +195,10 @@ export default function Config(props) {
                         onRowDelete: (oldData) =>
                             new Promise((resolve, reject) => {
                                 setTimeout(() => {
-                                    const dataDelete = [...ubicaciones];
+                                    const dataDelete = [...recursos];
                                     const index = oldData.tableData.id;
                                     dataDelete.splice(index, 1);
-                                    setUbicaciones([...dataDelete]);
+                                    setRecursos([...dataDelete]);
 
                                     resolve();
                                 }, 1000);
@@ -269,7 +209,7 @@ export default function Config(props) {
                     }
                     options={{
                         headerStyle: {
-                            backgroundColor: "#01579b",
+                            backgroundColor: "#075218",
                             color: "#FFF",
                         },
                         rowStyle: (rowData) => ({
@@ -283,88 +223,5 @@ export default function Config(props) {
             </ThemeProvider>
         );
     }
-    if (isLoading) {
-        return <div></div>;
-    } else {
-        return (
-            <div>
-                <Dialog
-                    open={true}
-                    onClose={(e, accion) => handleClose(e, 0)}
-                    maxWidth="xl"
-                    fullWidth={true}
-                    keepMounted={true}
-                    scroll="paper"
-                >
-                    <DialogTitle className="text" sx={{ m: 0, p: 2 }}>
-                        <Typography
-                            fontFamily="Open Sans"
-                            fontSize={28}
-                            fontWeight="bold"
-                            color="navy"
-                        >
-                            {"Configuración del  " + props.nombreCentro}
-                        </Typography>
-                        <IconButton
-                            aria-label="close"
-                            onClick={(e, accion) => handleClose(e, 1)}
-                            sx={{
-                                position: "absolute",
-                                right: 8,
-                                top: 8,
-                                color: (theme) => theme.palette.grey[500],
-                            }}
-                        >
-                            <CloseIcon />
-                        </IconButton>
-                        <Typography
-                            fontFamily="Open Sans"
-                            fontSize={18}
-                            color="navy"
-                        >
-                            Configuración de los datos básicos de un hospital
-                        </Typography>
-                    </DialogTitle>
-                    <DialogContent dividers sx={{ minHeight: 700 }}>
-                        <TabContext value={defaultTab}>
-                            <Box
-                                sx={{
-                                    width: "100%",
-                                    borderBottom: 1,
-                                    borderColor: "divider",
-                                }}
-                            >
-                                <TabList
-                                    onChange={handleChangeTab}
-                                    aria-label="configuracion"
-                                >
-                                    <Tab
-                                        label="Ubicaciones"
-                                        value="ubicaciones"
-                                    />
-                                    <Tab label="Servicios" value="servicios" />
-                                    <Tab label="Recursos" value="recursos" />
-                                </TabList>
-                            </Box>
-                            <TabPanel value="ubicaciones">
-                                <GridUbicaciones />
-                            </TabPanel>
-                            <TabPanel value="servicios">
-                                <Serviciosqui facility={props.facility} />
-                            </TabPanel>
-                            <TabPanel value="recursos">Recursos</TabPanel>
-                        </TabContext>
-                    </DialogContent>
-                    <DialogActions>
-                        <Button
-                            variant="contained"
-                            onClick={(e, accion) => handleClose(e, 1)}
-                        >
-                            Cerrar
-                        </Button>
-                    </DialogActions>
-                </Dialog>
-            </div>
-        );
-    }
+    return <GridRecursos />;
 }
