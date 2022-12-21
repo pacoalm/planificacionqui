@@ -18,6 +18,7 @@ import Sidebar from "./sidebar";
 import Config from "./forms/config";
 
 import "./header.css";
+import Plantillas from "./forms/plantillas";
 
 export default function PrimarySearchAppBar(props) {
 	const [nombreCentro, setNombreCentro] = useState("");
@@ -27,11 +28,16 @@ export default function PrimarySearchAppBar(props) {
 	const [sidebarOpen, setSidebarOpen] = useState(false);
 
 	const [configOpen, setConfigOpen] = useState(false);
+	const [plantillasOpen, setPlantillasOpen] = useState(false);
 
 	const { dispatch, usuarioPQ, centros } = useContext(AppContext);
 
 	const handleFormConfigClose = () => {
 		setConfigOpen(false);
+	};
+
+	const handleFormPlantillasClose = () => {
+		setPlantillasOpen(false);
 	};
 
 	const menuId = "primary-search-account-menu";
@@ -45,6 +51,7 @@ export default function PrimarySearchAppBar(props) {
 		setSidebarOpen(false);
 
 		if (accion === 1) setConfigOpen(true);
+		if (accion === 2) setPlantillasOpen(true);
 	};
 
 	const handleProfileMenuOpen = (event) => {
@@ -162,6 +169,7 @@ export default function PrimarySearchAppBar(props) {
 			{renderMenuProfile}
 			{sidebarOpen && (
 				<Sidebar
+					usuarioPQ={usuarioPQ}
 					handleClose={(e, accion) => handleSidebarMenuClose(e, accion)}
 				/>
 			)}
@@ -170,6 +178,14 @@ export default function PrimarySearchAppBar(props) {
 					usuario={usuarioPQ}
 					nombreCentro={nombreCentro}
 					handleClose={handleFormConfigClose}
+					facility={facility}
+				/>
+			)}
+			{plantillasOpen && (
+				<Plantillas
+					usuario={usuarioPQ}
+					nombreCentro={nombreCentro}
+					handleClose={handleFormPlantillasClose}
 					facility={facility}
 				/>
 			)}

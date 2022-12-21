@@ -44,9 +44,30 @@ const tableIcons = {
 };
 export default function Recursos(props) {
 	const [recursos, setRecursos] = React.useState([]);
+	const [TiposRecurso, setTiposRecurso] = React.useState([]);
 	const [isLoading, setIsLoading] = React.useState(true);
 
 	React.useEffect(() => {
+		const fetchTiposRecurso = async () => {
+			await fetch(
+				"http://" +
+					process.env.REACT_APP_API_SERVER +
+					":" +
+					process.env.REACT_APP_API_PORT +
+					"/api/tiposrecurso"
+			)
+				.then((response) => response.json())
+				.then((data) => {
+					let arrayTiposRecurso = {};
+
+					data.map((t) => {
+						arrayTiposRecurso[t.SID] = t.DESCRIPCION;
+					});
+
+					setTiposRecurso(arrayTiposRecurso);
+				});
+		};
+
 		const fetchRecursos = async () => {
 			await fetch(
 				"http://" +
@@ -59,12 +80,12 @@ export default function Recursos(props) {
 				.then((response) => response.json())
 				.then((data) => {
 					setRecursos(data);
+					setIsLoading(false);
 				});
 		};
 
+		fetchTiposRecurso();
 		fetchRecursos();
-		console.log(recursos);
-		setIsLoading(false);
 	}, []);
 
 	function GridRecursos() {
@@ -75,6 +96,13 @@ export default function Recursos(props) {
 			{ title: "uuid", field: "UUID", hidden: true },
 			{ title: "Descripción", field: "DESCRIPCION" },
 			{ title: "Alias", field: "ALIAS" },
+			{
+				title: "Tipo",
+				field: "TIPO",
+				type: "numeric",
+				lookup: TiposRecurso,
+				width: "15%",
+			},
 
 			{
 				title: "Activo",
@@ -138,7 +166,7 @@ export default function Recursos(props) {
 						},
 					}}
 					icons={tableIcons}
-					title="Ubicaciones quirúrgicas"
+					title="Recursos quirúrgicos"
 					columns={columns}
 					data={recursos}
 					editable={{
@@ -151,11 +179,12 @@ export default function Recursos(props) {
 									process.env.REACT_APP_API_SERVER +
 									":" +
 									process.env.REACT_APP_API_PORT +
-									"/api/recursos";
+									"/api/recurso";
 								let postData = {};
 								postData["facility"] = props.facility;
 								postData["DESCRIPCION"] = newData.DESCRIPCION;
 								postData["ALIAS"] = newData.ALIAS;
+								postData["TIPO"] = newData.TIPO;
 								postData["ACTIVO"] = newData.ACTIVO ? "1" : "0";
 
 								const fetchData = async () => {

@@ -10,92 +10,108 @@ import ListItemText from "@mui/material/ListItemText";
 import InboxIcon from "@mui/icons-material/MoveToInbox";
 import MailIcon from "@mui/icons-material/Mail";
 import ConfigIcon from "@mui/icons-material/BuildCircleTwoTone";
+import PlantillaIcon from "@mui/icons-material/ArchitectureTwoTone";
+import Avatar from "@mui/material/Avatar";
+import AccountCircle from "@mui/icons-material/AccountCircle";
+import Typography from "@mui/material/Typography";
+import "./header.css";
+import { fontFamily, width } from "@mui/system";
 
 export default function Sidebar(props) {
-    const [state, setState] = useState(true);
+	const [state, setState] = useState(true);
 
-    const toggleDrawer = (open) => (event) => {
-        if (
-            event.type === "keydown" &&
-            (event.key === "Tab" || event.key === "Shift")
-        ) {
-            return;
-        }
+	const toggleDrawer = (open) => (event) => {
+		if (
+			event.type === "keydown" &&
+			(event.key === "Tab" || event.key === "Shift")
+		) {
+			return;
+		}
 
-        setState(open);
+		setState(open);
 
-        if (!open) props.handleClose(event, 0);
-    };
+		if (!open) props.handleClose(event, 0);
+	};
 
-    const handleAbreConfig = (event) => {
-        props.handleClose(event, 1);
-    };
+	const handleAbreConfig = (event) => {
+		props.handleClose(event, 1);
+	};
 
-    const list = () => (
-        <Box
-            sx={{
-                width: 250,
-                height: "100%",
-                backgroundColor: "navy",
-                color: "white",
-            }}
-            role="presentation"
-            onClick={toggleDrawer(false)}
-            onKeyDown={toggleDrawer(false)}
-        >
-            <List>
-                {["Inbox", "Starred", "Send email", "Drafts"].map(
-                    (text, index) => (
-                        <ListItem
-                            key={text}
-                            disablePadding
-                            sx={{ fontFamily: "Open Sans" }}
-                        >
-                            <ListItemButton>
-                                <ListItemIcon>
-                                    {index % 2 === 0 ? (
-                                        <InboxIcon sx={{ color: "white" }} />
-                                    ) : (
-                                        <MailIcon sx={{ color: "white" }} />
-                                    )}
-                                </ListItemIcon>
-                                <ListItemText primary={text} />
-                            </ListItemButton>
-                        </ListItem>
-                    )
-                )}
-            </List>
-            <Divider />
-            <List>
-                <ListItem
-                    key={"config"}
-                    disablePadding
-                    onClick={() => {
-                        handleAbreConfig();
-                    }}
-                >
-                    <ListItemButton>
-                        <ListItemIcon>
-                            <ConfigIcon sx={{ color: "white" }} />
-                        </ListItemIcon>
-                        <ListItemText primary="Configuración" />
-                    </ListItemButton>
-                </ListItem>
-            </List>
-        </Box>
-    );
+	const handleAbrePlantillas = (event) => {
+		props.handleClose(event, 2);
+	};
 
-    return (
-        <div>
-            <React.Fragment key="left">
-                <Drawer
-                    anchor={"left"}
-                    open={true}
-                    onClose={toggleDrawer(false)}
-                >
-                    {list("left")}
-                </Drawer>
-            </React.Fragment>
-        </div>
-    );
+	const list = () => (
+		<Box
+			sx={{
+				width: 220,
+				height: "100%",
+				bgcolor: "whitesmoke",
+			}}
+			role="presentation"
+			onClick={toggleDrawer(false)}
+			onKeyDown={toggleDrawer(false)}
+		>
+			<div className="AvatarContainer">
+				<AccountCircle sx={{ marginTop: 1, height: 40, width: 40 }} />
+				<Typography sx={{ fontFamily: "Open Sans", fontSize: 12 }}>
+					{props.usuarioPQ.nombre}
+				</Typography>
+				<hr
+					style={{
+						color: "white",
+						height: "2px",
+						width: "100%",
+						marginTop: 4,
+					}}
+				/>
+			</div>
+
+			<Divider />
+			<List dense={true}>
+				<ListItem
+					key={"Plantillas"}
+					disablePadding
+					onClick={() => {
+						handleAbrePlantillas();
+					}}
+				>
+					<ListItemButton>
+						<ListItemIcon>
+							<PlantillaIcon />
+						</ListItemIcon>
+						<ListItemText
+							sx={{ marginLeft: -2, fontFamily: "Open Sans", fontSize: 12 }}
+							primary="Plantillas"
+						/>
+					</ListItemButton>
+				</ListItem>
+
+				<ListItem
+					key={"config"}
+					disablePadding
+					onClick={() => {
+						handleAbreConfig();
+					}}
+				>
+					<ListItemButton>
+						<ListItemIcon>
+							<ConfigIcon />
+						</ListItemIcon>
+						<ListItemText sx={{ marginLeft: -2 }} primary="Configuración" />
+					</ListItemButton>
+				</ListItem>
+			</List>
+		</Box>
+	);
+
+	return (
+		<div>
+			<React.Fragment key="left">
+				<Drawer anchor={"left"} open={true} onClose={toggleDrawer(false)}>
+					{list("left")}
+				</Drawer>
+			</React.Fragment>
+		</div>
+	);
 }
