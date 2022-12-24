@@ -1,0 +1,24 @@
+.containerCalendario {
+    float: left;
+    background-color: royalblue;
+    width: 80%;
+    height: 100%;
+}
+
+.containerServicios {
+    float: left;
+    background-color: whitesmoke;
+    width: 20%;
+    height: 100%;
+}
+
+.containerFull {
+    height: 95%;
+    background-color: aqua;
+}
+
+.spinner {
+    margin-top: 8;
+    margin-left: 8;
+    padding: 8;
+}

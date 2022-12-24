@@ -31,9 +31,12 @@ import Remove from "@mui/icons-material/Remove";
 import SaveAlt from "@mui/icons-material/SaveAlt";
 import Search from "@mui/icons-material/Search";
 import ViewColumn from "@mui/icons-material/ViewColumn";
+import Calendar from "@mui/icons-material/CalendarMonthTwoTone";
+import Planificacion from "./planificacion";
 
 const tableIcons = {
     Add: forwardRef((props, ref) => <AddBox {...props} ref={ref} />),
+    Cal: forwardRef((props, ref) => <Calendar {...props} ref={ref} />),
     Check: forwardRef((props, ref) => <Check {...props} ref={ref} />),
     Clear: forwardRef((props, ref) => <Clear {...props} ref={ref} />),
     Delete: forwardRef((props, ref) => <DeleteOutline {...props} ref={ref} />),
@@ -64,8 +67,15 @@ export default function Plantillas(props) {
     const [plantillas, setPlantillas] = React.useState([]);
     const [serviciosQui, setServiciosQui] = React.useState([]);
     const [isLoading, setIsLoading] = React.useState(true);
+    const [planificacionVisible, setPlanificacionVisible] =
+        React.useState(false);
+    const [rowSel, setRowSel] = React.useState([]);
 
-    const semanas = [1, 2, 3, 4];
+    var semanas = [];
+    semanas[1] = 1;
+    semanas[2] = 2;
+    semanas[3] = 3;
+    semanas[4] = 4;
 
     React.useEffect(() => {
         const fetchServiciosQui = async () => {
@@ -189,6 +199,16 @@ export default function Plantillas(props) {
                             showColumnsTitle: "Mostrar columnas",
                         },
                     }}
+                    actions={[
+                        {
+                            icon: Calendar,
+                            tooltip: "Editar plantilla",
+                            onClick: (event, rowData) => {
+                                setRowSel(rowData);
+                                setPlanificacionVisible(true);
+                            },
+                        },
+                    ]}
                     icons={tableIcons}
                     title="Plantillas Quirúrgicas"
                     columns={columns}
@@ -207,11 +227,8 @@ export default function Plantillas(props) {
                                 let postData = {};
                                 postData["facility"] = props.facility;
                                 postData["DESCRIPCION"] = newData.DESCRIPCION;
-                                postData["ALIAS"] = newData.ALIAS;
-                                postData["TIPO"] = newData.TIPO;
                                 postData["SERVICIO"] = newData.SERVICIO;
-                                postData["ACTIVA"] = newData.ACTIVA ? "1" : "0";
-
+                                postData["SEMANAS"] = newData.SEMANAS;
                                 const fetchData = async () => {
                                     const response = await fetch(url, {
                                         method: "POST",
@@ -229,28 +246,6 @@ export default function Plantillas(props) {
                                 setPlantillas([...plantillas, newData]);
 
                                 resolve();
-                            }),
-                        onRowUpdate: (newData, oldData) =>
-                            new Promise((resolve, reject) => {
-                                setTimeout(() => {
-                                    const dataUpdate = [...plantillas];
-                                    const index = oldData.tableData.id;
-                                    dataUpdate[index] = newData;
-                                    setPlantillas([...dataUpdate]);
-
-                                    resolve();
-                                }, 1000);
-                            }),
-                        onRowDelete: (oldData) =>
-                            new Promise((resolve, reject) => {
-                                setTimeout(() => {
-                                    const dataDelete = [...plantillas];
-                                    const index = oldData.tableData.id;
-                                    dataDelete.splice(index, 1);
-                                    setPlantillas([...dataDelete]);
-
-                                    resolve();
-                                }, 1000);
                             }),
                     }}
                     onRowClick={(evt, selectedRow) =>
@@ -277,57 +272,69 @@ export default function Plantillas(props) {
         if (accion === 1) props.handleClose();
     };
 
+    const handleClosePlanificacion = (event) => {
+        setPlanificacionVisible(false);
+    };
+
     return (
-        <div>
-            <Dialog
-                open={true}
-                onClose={(e, accion) => handleClose(e, 0)}
-                maxWidth="xl"
-                fullWidth={true}
-                keepMounted={true}
-                scroll="paper"
-            >
-                <DialogTitle className="text" sx={{ m: 0, p: 2 }}>
-                    <Typography
-                        fontFamily="Open Sans"
-                        fontSize={28}
-                        fontWeight="bold"
-                        color="navy"
-                    >
-                        {"Plantillas de planificación"}
-                    </Typography>
-                    <IconButton
-                        aria-label="close"
-                        onClick={(e, accion) => handleClose(e, 1)}
-                        sx={{
-                            position: "absolute",
-                            right: 8,
-                            top: 8,
-                            color: (theme) => theme.palette.grey[500],
-                        }}
-                    >
-                        <CloseIcon />
-                    </IconButton>
-                    <Typography
-                        fontFamily="Open Sans"
-                        fontSize={18}
-                        color="navy"
-                    >
-                        Mantenimiento de plantillas para la programación
-                    </Typography>
-                </DialogTitle>
-                <DialogContent dividers sx={{ minHeight: 700 }}>
-                    <GridPlantillas />
-                </DialogContent>
-                <DialogActions>
-                    <Button
-                        variant="contained"
-                        onClick={(e, accion) => handleClose(e, 1)}
-                    >
-                        Cerrar
-                    </Button>
-                </DialogActions>
-            </Dialog>
-        </div>
+        <React.Fragment>
+            <div>
+                <Dialog
+                    open={true}
+                    onClose={(e, accion) => handleClose(e, 0)}
+                    maxWidth="xl"
+                    fullWidth={true}
+                    keepMounted={true}
+                    scroll="paper"
+                >
+                    <DialogTitle className="text" sx={{ m: 0, p: 2 }}>
+                        <Typography
+                            fontFamily="Open Sans"
+                            fontSize={28}
+                            fontWeight="bold"
+                            color="navy"
+                        >
+                            {"Plantillas de planificación"}
+                        </Typography>
+                        <IconButton
+                            aria-label="close"
+                            onClick={(e, accion) => handleClose(e, 1)}
+                            sx={{
+                                position: "absolute",
+                                right: 8,
+                                top: 8,
+                                color: (theme) => theme.palette.grey[500],
+                            }}
+                        >
+                            <CloseIcon />
+                        </IconButton>
+                        <Typography
+                            fontFamily="Open Sans"
+                            fontSize={18}
+                            color="navy"
+                        >
+                            Mantenimiento de plantillas para la programación
+                        </Typography>
+                    </DialogTitle>
+                    <DialogContent dividers sx={{ minHeight: 700 }}>
+                        <GridPlantillas />
+                    </DialogContent>
+                    <DialogActions>
+                        <Button
+                            variant="contained"
+                            onClick={(e, accion) => handleClose(e, 1)}
+                        >
+                            Cerrar
+                        </Button>
+                    </DialogActions>
+                </Dialog>
+            </div>
+            {planificacionVisible && (
+                <Planificacion
+                    data={rowSel}
+                    handleClose={handleClosePlanificacion}
+                />
+            )}
+        </React.Fragment>
     );
 }
