@@ -4,14 +4,8 @@ import TabContext from "@mui/lab/TabContext";
 import TabList from "@mui/lab/TabList";
 import TabPanel from "@mui/lab/TabPanel";
 import Box from "@mui/material/Box";
-
+import Servicio from "./Servicio";
 import List from "@mui/material/List";
-import ListItem from "@mui/material/ListItem";
-import ListItemAvatar from "@mui/material/ListItemAvatar";
-import ListItemIcon from "@mui/material/ListItemIcon";
-import ListItemText from "@mui/material/ListItemText";
-import Avatar from "@mui/material/Avatar";
-import FolderIcon from "@mui/icons-material/Folder";
 
 function ServyRecursos(props) {
     const [servicios, setServicios] = React.useState([]);
@@ -49,18 +43,8 @@ function ServyRecursos(props) {
                 }}
             >
                 <List dense={false}>
-                    {servicios.map((s) => (
-                        <ListItem key={s.XKEY}>
-                            <ListItemAvatar>
-                                <Avatar sx={{ backgroundColor: "#5CDF63" }}>
-                                    <FolderIcon />
-                                </Avatar>
-                            </ListItemAvatar>
-                            <ListItemText
-                                primary={s.XKEY.substring(3)}
-                                secondary={s.DESCRIPTION}
-                            />
-                        </ListItem>
+                    {servicios.map((s, index) => (
+                        <Servicio id={s.XKEY} description={s.DESCRIPTION} />
                     ))}
                 </List>
             </Box>

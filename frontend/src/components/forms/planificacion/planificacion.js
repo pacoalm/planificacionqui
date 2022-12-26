@@ -9,6 +9,8 @@ import CalendarioPl from "./calendarioPl";
 import "./css/planificacion.css";
 import ReactLoading from "react-loading";
 import ServyRecursos from "./ServyRecursos";
+import { DndProvider } from "react-dnd";
+import { HTML5Backend } from "react-dnd-html5-backend";
 
 const style = {
     position: "absolute",
@@ -76,15 +78,16 @@ function Planificacion(props) {
                     >
                         <CloseIcon />
                     </IconButton>
-
-                    <div className="containerFull">
-                        <div className="containerCalendario">
-                            <CalendarioPl data={props.data} />
+                    <DndProvider backend={HTML5Backend}>
+                        <div className="containerFull">
+                            <div className="containerCalendario">
+                                <CalendarioPl data={props.data} />
+                            </div>
+                            <div className="containerServicios">
+                                <ServyRecursos data={props.data} />
+                            </div>
                         </div>
-                        <div className="containerServicios">
-                            <ServyRecursos data={props.data} />
-                        </div>
-                    </div>
+                    </DndProvider>
                 </Box>
             </Modal>
         </React.Fragment>

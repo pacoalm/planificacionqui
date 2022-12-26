@@ -7,6 +7,7 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import { styled } from "@mui/material/styles";
+import { useDrop } from "react-dnd";
 
 const diasSemana = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes"];
 const turnos = ["Mañana", "Tarde"];
@@ -28,6 +29,9 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.body}`]: {
         fontSize: 14,
         borderLeft: "1px solid rgba(224, 224, 224, 1)",
+        height: 40,
+        width: 100,
+        padding: 0,
     },
 }));
 const StyledTableRow = styled(TableRow)(({ theme }) => ({
@@ -38,6 +42,10 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 
 export default function CalendarioPl(props) {
     const [ubicaciones, setUbicaciones] = React.useState([]);
+
+    const handleCellDrop = (item) => {
+        alert(item.id);
+    };
 
     React.useEffect(() => {
         const fetchUbicaciones = async () => {
@@ -64,6 +72,33 @@ export default function CalendarioPl(props) {
 
         fetchUbicaciones();
     }, []);
+
+    function CeldaTurno(propsC) {
+        const [{ isOver }, dropRef] = useDrop({
+            accept: "Servicio",
+            drop: (item) => {
+                handleCellDrop(item);
+            },
+            collect: (monitor) => ({
+                isOver: monitor.isOver(),
+            }),
+        });
+
+        // alert(propsC.semana);
+        return (
+            <StyledTableCell
+                onClick={(e) =>
+                    handleCellClick(e, propsC.sub, propsC.dia, propsC.turno)
+                }
+            >
+                <div className="celdaTurno" ref={dropRef}></div>
+            </StyledTableCell>
+        );
+    }
+
+    const handleCellClick = (e, ub, d, t) => {
+        alert(ub + d + t);
+    };
 
     return (
         <TableContainer component={Paper}>
@@ -94,8 +129,8 @@ export default function CalendarioPl(props) {
 
                     <TableRow>
                         {diasSemana.map((d) =>
-                            turnos.map((t) => (
-                                <StyledTableCell align="center">
+                            turnos.map((t, index) => (
+                                <StyledTableCell key={index} align="center">
                                     {t}
                                 </StyledTableCell>
                             ))
@@ -114,12 +149,18 @@ export default function CalendarioPl(props) {
                             <StyledTableFixed align="center">
                                 {ub.ALIAS}
                             </StyledTableFixed>
-                            {diasSemana.map((d) => (
-                                <>
-                                    <StyledTableCell></StyledTableCell>
-                                    <StyledTableCell></StyledTableCell>
-                                </>
-                            ))}
+
+                            {diasSemana.map((d, indexd) =>
+                                turnos.map((t, index) => (
+                                    <CeldaTurno
+                                        index={index}
+                                        semana={1}
+                                        ub={ub.ALIAS}
+                                        dia={d}
+                                        turno={t}
+                                    />
+                                ))
+                            )}
                         </StyledTableRow>
                     ))}
                 </TableBody>

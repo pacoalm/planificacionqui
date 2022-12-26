@@ -22,3 +22,12 @@
     margin-left: 8;
     padding: 8;
 }
+
+.celdaTurno {
+    float: left;
+    height: 100%;
+    width: 100%;
+}
+.celdaTurno:hover {
+    background-color: darkseagreen;
+}
