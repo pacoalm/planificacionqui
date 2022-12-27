@@ -1,33 +1,45 @@
 .containerCalendario {
-    float: left;
-    background-color: royalblue;
-    width: 80%;
-    height: 100%;
+	float: left;
+	background-color: whitesmoke;
+	width: 80%;
+	height: 100%;
+	opacity: 0.9;
 }
 
 .containerServicios {
-    float: left;
-    background-color: whitesmoke;
-    width: 20%;
-    height: 100%;
+	float: left;
+	background-color: whitesmoke;
+	width: 20%;
+	height: 100%;
+	overflow: scroll;
 }
 
 .containerFull {
-    height: 95%;
-    background-color: aqua;
+	height: 95%;
+	border-radius: 10px;
+	box-shadow: 9px 6px 30px 0px rgba(0, 0, 0, 0.75);
 }
 
 .spinner {
-    margin-top: 8;
-    margin-left: 8;
-    padding: 8;
+	margin-top: 8;
+	margin-left: 8;
+	padding: 8;
 }
 
 .celdaTurno {
-    float: left;
-    height: 100%;
-    width: 100%;
+	float: left;
+	height: 95%;
+	width: 100%;
 }
-.celdaTurno:hover {
-    background-color: darkseagreen;
+.celdaTurnoSel {
+	float: left;
+	height: 95%;
+	width: 100%;
+	background-color: coral;
+}
+
+.servicio {
+	margin: 0;
+	padding: 0;
+	font-size: 12px;
 }
