@@ -3,7 +3,7 @@
 	background-color: whitesmoke;
 	width: 80%;
 	height: 100%;
-	opacity: 0.9;
+	overflow: scroll;
 }
 
 .containerServicios {
@@ -27,12 +27,15 @@
 }
 
 .celdaTurno {
-	float: left;
+	display: flex;
+	justify-content: center;
+
 	height: 95%;
 	width: 100%;
 }
 .celdaTurnoSel {
-	float: left;
+	display: flex;
+	justify-content: center;
 	height: 95%;
 	width: 100%;
 	background-color: coral;

@@ -30,6 +30,7 @@ const style = {
 function Planificacion(props) {
 	const [open, setOpen] = React.useState(true);
 	const [isLoading, setIsLoading] = React.useState(false);
+	const [actualiza, setActualiza] = React.useState(false);
 
 	const handleClose = () => {
 		props.handleClose();
@@ -39,8 +40,12 @@ function Planificacion(props) {
 		setIsLoading(true);
 	};
 
-	const handleFinLoading = () => {
+	const handleEndLoading = () => {
 		setIsLoading(false);
+	};
+
+	const handleActualiza = () => {
+		setActualiza(!actualiza);
 	};
 
 	return (
@@ -86,12 +91,13 @@ function Planificacion(props) {
 								<CalendarioPl
 									data={props.data}
 									handleStartLoading={handleStartLoading}
+									handleActualiza={handleActualiza}
 								/>
 							</div>
 							<div className="containerServicios">
 								<ServyRecursos
 									data={props.data}
-									handleFinLoading={handleFinLoading}
+									handleEndLoading={handleEndLoading}
 								/>
 							</div>
 						</div>

@@ -22,7 +22,7 @@ function ServyRecursos(props) {
 			)
 				.then((response) => response.json())
 				.then((data) => {
-					props.handleFinLoading();
+					props.handleEndLoading();
 					setServicios(data.filter((s) => s.QUI === 1));
 				});
 		};

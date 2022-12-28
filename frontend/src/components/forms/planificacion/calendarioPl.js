@@ -9,7 +9,6 @@ import Paper from "@mui/material/Paper";
 import { styled } from "@mui/material/styles";
 import { useDrop } from "react-dnd";
 import Chip from "@mui/material/Chip";
-import Stack from "@mui/material/Stack";
 
 const diasSemana = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes"];
 const turnos = ["Mañana", "Tarde"];
@@ -46,6 +45,7 @@ export default function CalendarioPl(props) {
 	var arraySemanas = [1, 2];
 	const [ubicaciones, setUbicaciones] = React.useState([]);
 	const [detallePlantilla, setDetallePlantilla] = React.useState([]);
+	const [actualiza, setActualiza] = React.useState(false);
 
 	React.useEffect(() => {
 		const fetchUbicaciones = async () => {
@@ -85,15 +85,14 @@ export default function CalendarioPl(props) {
 				});
 		};
 
-		props.handleStartLoading();
 		fetchUbicaciones();
 		fetchDetallesPlantilla();
-	}, []);
+	}, [actualiza]);
 
 	function ServiciosTurno(propsS) {
 		var servicios = [];
 
-		if (propsS.DIA !== "Miércoles") {
+		if (propsS.d !== "Miércoles") {
 			servicios = detallePlantilla.filter(
 				(dp) =>
 					dp.SEMANA === propsS.s &&
@@ -112,11 +111,30 @@ export default function CalendarioPl(props) {
 		}
 
 		return (
-			<Stack spacing={1}>
+			<React.Fragment>
 				{servicios.map((ser) => (
-					<Chip label={ser.SERVICIO.substring(3)} />
+					<Chip
+						label={ser.SERVICIO.substring(3)}
+						color="primary"
+						size="small"
+						sx={{
+							width: "80%",
+							height: "20px",
+							fontSize: "12px",
+						}}
+						onDelete={(e) =>
+							handleDeleteServicio(
+								e,
+								propsS.s,
+								propsS.d,
+								propsS.t,
+								propsS.ub,
+								ser.SERVICIO
+							)
+						}
+					/>
 				))}
-			</Stack>
+			</React.Fragment>
 		);
 	}
 
@@ -151,65 +169,108 @@ export default function CalendarioPl(props) {
 		);
 	}
 
+	const handleDeleteServicio = (e, s, d, t, ub, ser) => {
+		alert(s + d + t + ub + ser);
+	};
+
 	const handleCellDrop = (item, s, ub, d, t) => {
-		alert(item.id + s + ub + d + t);
+		const url =
+			"http://" +
+			process.env.REACT_APP_API_SERVER +
+			":" +
+			process.env.REACT_APP_API_PORT +
+			"/api/detalleplantilla";
+		const postData = {
+			plantilla: props.data.UUID,
+			semana: s,
+			dia: d === "Miércoles" ? "X" : d.substring(0, 1),
+			turno: t.substring(0, 1),
+			ubicacion: ub,
+			servicio: item.id,
+		};
+
+		const fetchData = async () => {
+			const response = await fetch(url, {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify(postData),
+			});
+			setActualiza(!actualiza);
+			props.handleEndLoading();
+			const data = await response.json();
+		};
+
+		fetchData();
 	};
 
 	return (
-		<TableContainer component={Paper}>
-			<Table sx={{ minWidth: 700 }} aria-label="spanning table" size="small">
-				<TableHead>
-					<TableRow>
-						<StyledTableCell align="center" rowSpan={2}>
-							Sem.
-						</StyledTableCell>
-						<StyledTableCell align="center" rowSpan={2}>
-							Ubq.
-						</StyledTableCell>
-						{diasSemana.map((d) => (
-							<StyledTableCell key={d} align="center" width={"18%"} colSpan={2}>
-								{d}
+		<>
+			{actualiza}
+			<TableContainer component={Paper}>
+				<Table sx={{ minWidth: 700 }} aria-label="spanning table" size="small">
+					<TableHead>
+						<TableRow>
+							<StyledTableCell align="center" rowSpan={2}>
+								Sem.
 							</StyledTableCell>
-						))}
-					</TableRow>
-
-					<TableRow>
-						{diasSemana.map((d) =>
-							turnos.map((t, index) => (
-								<StyledTableCell key={index} align="center">
-									{t}
+							<StyledTableCell align="center" rowSpan={2}>
+								Ubq.
+							</StyledTableCell>
+							{diasSemana.map((d) => (
+								<StyledTableCell
+									key={d}
+									align="center"
+									width={"18%"}
+									colSpan={2}
+								>
+									{d}
 								</StyledTableCell>
+							))}
+						</TableRow>
+
+						<TableRow>
+							{diasSemana.map((d) =>
+								turnos.map((t, index) => (
+									<StyledTableCell key={index} align="center">
+										{t}
+									</StyledTableCell>
+								))
+							)}
+						</TableRow>
+					</TableHead>
+					<TableBody>
+						{arraySemanas.map((sem) =>
+							ubicaciones.map((ub, indexU) => (
+								<StyledTableRow key={indexU}>
+									{indexU === 0 && (
+										<StyledTableFixed
+											align="center"
+											rowSpan={ubicaciones.length}
+										>
+											S{sem}
+										</StyledTableFixed>
+									)}
+									<StyledTableFixed align="center">{ub.ALIAS}</StyledTableFixed>
+
+									{diasSemana.map((d, indexd) =>
+										turnos.map((t, indext) => (
+											<CeldaTurno
+												index={indext}
+												semana={sem}
+												ub={ub.ALIAS}
+												dia={d}
+												turno={t}
+											/>
+										))
+									)}
+								</StyledTableRow>
 							))
 						)}
-					</TableRow>
-				</TableHead>
-				<TableBody>
-					{arraySemanas.map((sem) =>
-						ubicaciones.map((ub, indexU) => (
-							<StyledTableRow key={indexU}>
-								{indexU === 0 && (
-									<StyledTableFixed align="center" rowSpan={ubicaciones.length}>
-										S{sem}
-									</StyledTableFixed>
-								)}
-								<StyledTableFixed align="center">{ub.ALIAS}</StyledTableFixed>
-
-								{diasSemana.map((d, indexd) =>
-									turnos.map((t, indext) => (
-										<CeldaTurno
-											index={indext}
-											semana={sem}
-											ub={ub.ALIAS}
-											dia={d}
-											turno={t}
-										/>
-									))
-								)}
-							</StyledTableRow>
-						))
-					)}
-				</TableBody>
-			</Table>
-		</TableContainer>
+					</TableBody>
+				</Table>
+			</TableContainer>
+		</>
 	);
 }
