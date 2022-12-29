@@ -83,7 +83,7 @@ export default function Sidebar(props) {
                                 fontFamily: "Open Sans",
                                 fontSize: 12,
                             }}
-                            primary="Plantillas"
+                            primary="Plantillas/Planificación"
                         />
                     </ListItemButton>
                 </ListItem>
