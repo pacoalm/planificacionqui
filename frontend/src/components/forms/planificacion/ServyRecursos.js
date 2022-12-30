@@ -5,10 +5,12 @@ import TabList from "@mui/lab/TabList";
 import TabPanel from "@mui/lab/TabPanel";
 import Box from "@mui/material/Box";
 import Servicio from "./Servicio";
+import Recurso from "./Recurso";
 import List from "@mui/material/List";
 
 function ServyRecursos(props) {
 	const [servicios, setServicios] = React.useState([]);
+	const [recursos, setRecursos] = React.useState([]);
 
 	React.useEffect(() => {
 		const fetchServiciosQui = async () => {
@@ -22,12 +24,28 @@ function ServyRecursos(props) {
 			)
 				.then((response) => response.json())
 				.then((data) => {
-					props.handleEndLoading();
 					setServicios(data.filter((s) => s.QUI === 1));
 				});
 		};
 
+		const fetchRecursos = async () => {
+			await fetch(
+				"http://" +
+					process.env.REACT_APP_API_SERVER +
+					":" +
+					process.env.REACT_APP_API_PORT +
+					"/api/recursos/" +
+					props.data.FACILITY
+			)
+				.then((response) => response.json())
+				.then((data) => {
+					props.handleEndLoading();
+					setRecursos(data.filter((r) => r.ACTIVO === 1));
+				});
+		};
+
 		fetchServiciosQui();
+		fetchRecursos();
 	}, []);
 
 	const ListaServicios = () => {
@@ -54,7 +72,26 @@ function ServyRecursos(props) {
 	};
 
 	const ListaRecursos = () => {
-		return <></>;
+		return (
+			<Box
+				sx={{
+					mb: 2,
+					display: "flex",
+					flexDirection: "column",
+					height: 950,
+					overflow: "visible",
+					overflowY: "visible",
+					margin: 0,
+					// justifyContent="flex-end" # DO NOT USE THIS WITH 'scroll'
+				}}
+			>
+				<List dense={true}>
+					{recursos.map((r, index) => (
+						<Recurso id={r.UUID} alias={r.ALIAS} descripcion={r.DESCRIPCION} />
+					))}
+				</List>
+			</Box>
+		);
 	};
 
 	const [defaultTab, setDefaultTab] = React.useState("servicios");
@@ -81,7 +118,9 @@ function ServyRecursos(props) {
 				<TabPanel value="servicios" sx={{ margin: 0, padding: 0 }}>
 					<ListaServicios />
 				</TabPanel>
-				<TabPanel value="recursos" sx={{ margin: 0, padding: 0 }}></TabPanel>
+				<TabPanel value="recursos" sx={{ margin: 0, padding: 0 }}>
+					<ListaRecursos />
+				</TabPanel>
 			</TabContext>
 		</div>
 	);

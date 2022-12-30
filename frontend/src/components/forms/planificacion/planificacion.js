@@ -11,6 +11,7 @@ import ReactLoading from "react-loading";
 import ServyRecursos from "./ServyRecursos";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
+import SendIcon from "@mui/icons-material/Send";
 
 const style = {
 	position: "absolute",
@@ -71,6 +72,13 @@ function Planificacion(props) {
 						{isLoading && (
 							<ReactLoading type="spin" color="navy" width={24} height={24} />
 						)}
+						<Button
+							sx={{ marginLeft: 10, marginTop: -0.6 }}
+							variant="contained"
+							endIcon={<SendIcon />}
+						>
+							Programar periodo con esta plantilla
+						</Button>
 					</div>
 
 					<IconButton

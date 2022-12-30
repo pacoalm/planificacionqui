@@ -28,14 +28,15 @@
 
 .celdaTurno {
 	display: flex;
-	justify-content: center;
+
+	justify-content: flex-start;
 
 	height: 95%;
 	width: 100%;
 }
 .celdaTurnoSel {
 	display: flex;
-	justify-content: center;
+	justify-content: flex-start;
 	height: 95%;
 	width: 100%;
 	background-color: coral;
