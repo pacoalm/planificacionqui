@@ -16,7 +16,7 @@ import MenuItem from "@mui/material/MenuItem";
 import { AppContext } from "../context/appcontext";
 import Sidebar from "./sidebar";
 import Config from "./forms/config";
-
+import CalendarioMensual from "./forms/calendarioMensual/CalendarioMensual";
 import "./header.css";
 import Plantillas from "./forms/planificacion/plantillas";
 
@@ -29,6 +29,7 @@ export default function PrimarySearchAppBar(props) {
 
     const [configOpen, setConfigOpen] = useState(false);
     const [plantillasOpen, setPlantillasOpen] = useState(false);
+    const [calendarioMensualOpen, setCalendarioMensualOpen] = useState(false);
 
     const { dispatch, usuarioPQ, centros } = useContext(AppContext);
 
@@ -38,6 +39,10 @@ export default function PrimarySearchAppBar(props) {
 
     const handleFormPlantillasClose = () => {
         setPlantillasOpen(false);
+    };
+
+    const handleFormCalendarioMensualClose = () => {
+        setCalendarioMensualOpen(false);
     };
 
     const menuId = "primary-search-account-menu";
@@ -52,6 +57,7 @@ export default function PrimarySearchAppBar(props) {
 
         if (accion === 1) setConfigOpen(true);
         if (accion === 2) setPlantillasOpen(true);
+        if (accion === 3) setCalendarioMensualOpen(true);
     };
 
     const handleProfileMenuOpen = (event) => {
@@ -190,6 +196,14 @@ export default function PrimarySearchAppBar(props) {
                     usuario={usuarioPQ}
                     nombreCentro={nombreCentro}
                     handleClose={handleFormPlantillasClose}
+                    facility={facility}
+                />
+            )}
+            {calendarioMensualOpen && (
+                <CalendarioMensual
+                    usuario={usuarioPQ}
+                    nombreCentro={nombreCentro}
+                    handleClose={handleFormCalendarioMensualClose}
                     facility={facility}
                 />
             )}

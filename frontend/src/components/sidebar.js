@@ -9,7 +9,8 @@ import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import ConfigIcon from "@mui/icons-material/BuildCircleTwoTone";
 import PlantillaIcon from "@mui/icons-material/ArchitectureTwoTone";
-import Avatar from "@mui/material/Avatar";
+import CalendarIcon from "@mui/icons-material/CalendarMonthTwoTone";
+
 import AccountCircle from "@mui/icons-material/AccountCircle";
 import Typography from "@mui/material/Typography";
 import "./header.css";
@@ -36,6 +37,10 @@ export default function Sidebar(props) {
 
     const handleAbrePlantillas = (event) => {
         props.handleClose(event, 2);
+    };
+
+    const handleAbreCalendarioMensual = (event) => {
+        props.handleClose(event, 3);
     };
 
     const list = () => (
@@ -66,6 +71,28 @@ export default function Sidebar(props) {
 
             <Divider />
             <List dense={true}>
+                <ListItem
+                    key={"CalendarioMes"}
+                    disablePadding
+                    onClick={() => {
+                        handleAbreCalendarioMensual();
+                    }}
+                >
+                    <ListItemButton>
+                        <ListItemIcon>
+                            <CalendarIcon />
+                        </ListItemIcon>
+                        <ListItemText
+                            sx={{
+                                marginLeft: -2,
+                                fontFamily: "Open Sans",
+                                fontSize: 12,
+                            }}
+                            primary="Calendario mensual"
+                        />
+                    </ListItemButton>
+                </ListItem>
+
                 <ListItem
                     key={"Plantillas"}
                     disablePadding
