@@ -6,6 +6,7 @@ import Typography from "@mui/material/Typography";
 import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
 import Paper from "@mui/material/Paper";
+import Stack from "@mui/material/Stack";
 
 import ReactLoading from "react-loading";
 
@@ -104,6 +105,7 @@ function CalendarioMensual(props) {
     const [valueMes, setValueMes] = React.useState(new dayjs());
     const [ubicaciones, setUbicaciones] = React.useState([]);
     const [arraySemanas, setArraySemanas] = React.useState([]);
+    const [inicioCalendario, setInicioCalendario] = React.useState("");
 
     React.useEffect(() => {
         const fetchUbicaciones = async () => {
@@ -130,17 +132,26 @@ function CalendarioMensual(props) {
     }, []);
 
     React.useEffect(() => {
-        const d1 = valueMes.startOf("Month").format("DD/MM/YYYY");
-        const d2 = valueMes.endOf("Month").format("DD/MM/YYYY");
-
         //'Determinar semanas del mes actual'
         var diasMes = parseInt(valueMes.endOf("Month").format("DD"));
 
         if (parseInt(valueMes.startOf("Month").format("d")) === 0) {
             diasMes = diasMes + 6;
+            setInicioCalendario(
+                valueMes.startOf("Month").add(-6, "day").format("DD/MM/YYYY")
+            );
         } else {
             diasMes =
                 diasMes + parseInt(valueMes.startOf("Month").format("d")) - 1;
+            setInicioCalendario(
+                valueMes
+                    .startOf("Month")
+                    .add(
+                        -parseInt(valueMes.startOf("Month").format("d")) + 1,
+                        "day"
+                    )
+                    .format("DD/MM/YYYY")
+            );
         }
 
         const semanas = Math.floor(diasMes / 7);
@@ -168,6 +179,13 @@ function CalendarioMensual(props) {
 
     const handleActualiza = () => {
         setActualiza(!actualiza);
+    };
+
+    const DiadelCalendario = (s, d) => {
+        const d1 = dayjs(inicioCalendario, "DD/MM/YYYY");
+
+        const d2 = d1.add(7 * s + d, "day");
+        return d2.format("DD/MM/YYYY");
     };
 
     return (
@@ -217,7 +235,7 @@ function CalendarioMensual(props) {
                                     );
                                 }}
                             />
-
+                            {inicioCalendario}
                             {isLoading && (
                                 <ReactLoading
                                     type="spin"
@@ -301,6 +319,19 @@ function CalendarioMensual(props) {
                                                     <StyledTableFixed align="center">
                                                         {ub.ALIAS}
                                                     </StyledTableFixed>
+                                                    {diasSemana.map(
+                                                        (d, indexD) =>
+                                                            turnos.map(
+                                                                (t, indext) => (
+                                                                    <StyledTableCell>
+                                                                        {DiadelCalendario(
+                                                                            indexS,
+                                                                            indexD
+                                                                        )}
+                                                                    </StyledTableCell>
+                                                                )
+                                                            )
+                                                    )}
                                                 </StyledTableRow>
                                             ))
                                         )}
