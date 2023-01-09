@@ -30,6 +30,7 @@ import TableRow from "@mui/material/TableRow";
 import { styled } from "@mui/material/styles";
 import { width } from "@mui/system";
 import dayjs from "dayjs";
+import CeldaTurno from "./CeldaTurno";
 
 const diasSemana = [
     "Lunes",
@@ -100,7 +101,7 @@ const StyledTableFixed = styled(TableCell)(({ theme }) => ({
 
 function CalendarioMensual(props) {
     const [open, setOpen] = React.useState(true);
-    const [isLoading, setIsLoading] = React.useState(false);
+    const [isLoading, setIsLoading] = React.useState(true);
     const [actualiza, setActualiza] = React.useState(false);
     const [valueMes, setValueMes] = React.useState(new dayjs());
     const [ubicaciones, setUbicaciones] = React.useState([]);
@@ -126,6 +127,7 @@ function CalendarioMensual(props) {
                             }
                         })
                     );
+                    setIsLoading(false);
                 });
         };
         fetchUbicaciones();
@@ -235,7 +237,7 @@ function CalendarioMensual(props) {
                                     );
                                 }}
                             />
-                            {inicioCalendario}
+
                             {isLoading && (
                                 <ReactLoading
                                     type="spin"
@@ -268,13 +270,6 @@ function CalendarioMensual(props) {
                                 >
                                     <TableHead>
                                         <TableRow>
-                                            <StyledTableCellShort
-                                                align="center"
-                                                rowSpan={2}
-                                                width={"4%"}
-                                            >
-                                                Ubq.
-                                            </StyledTableCellShort>
                                             {diasSemana.map((d) =>
                                                 d !== "Sábado" &&
                                                 d !== "Domingo" ? (
@@ -313,28 +308,25 @@ function CalendarioMensual(props) {
                                         </TableRow>
                                     </TableHead>
                                     <TableBody>
-                                        {arraySemanas.map((s, indexS) =>
-                                            ubicaciones.map((ub, indexU) => (
-                                                <StyledTableRow key={indexU}>
-                                                    <StyledTableFixed align="center">
-                                                        {ub.ALIAS}
-                                                    </StyledTableFixed>
-                                                    {diasSemana.map(
-                                                        (d, indexD) =>
-                                                            turnos.map(
-                                                                (t, indext) => (
-                                                                    <StyledTableCell>
-                                                                        {DiadelCalendario(
-                                                                            indexS,
-                                                                            indexD
-                                                                        )}
-                                                                    </StyledTableCell>
-                                                                )
-                                                            )
-                                                    )}
-                                                </StyledTableRow>
-                                            ))
-                                        )}
+                                        {arraySemanas.map((s, indexS) => (
+                                            <TableRow key={indexS}>
+                                                {diasSemana.map((d, indexD) =>
+                                                    turnos.map((t, indext) => (
+                                                        <TableCell
+                                                            height={200}
+                                                            padding="none"
+                                                        >
+                                                            <CeldaTurno
+                                                                dia={DiadelCalendario(
+                                                                    indexS,
+                                                                    indexD
+                                                                )}
+                                                            />
+                                                        </TableCell>
+                                                    ))
+                                                )}
+                                            </TableRow>
+                                        ))}
                                     </TableBody>
                                 </Table>
                             </TableContainer>
