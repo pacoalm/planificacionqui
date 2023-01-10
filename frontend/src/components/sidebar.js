@@ -16,137 +16,130 @@ import Typography from "@mui/material/Typography";
 import "./header.css";
 
 export default function Sidebar(props) {
-    const [state, setState] = useState(true);
+	const [state, setState] = useState(true);
 
-    const toggleDrawer = (open) => (event) => {
-        if (
-            event.type === "keydown" &&
-            (event.key === "Tab" || event.key === "Shift")
-        ) {
-            return;
-        }
+	const toggleDrawer = (open) => (event) => {
+		if (
+			event.type === "keydown" &&
+			(event.key === "Tab" || event.key === "Shift")
+		) {
+			return;
+		}
 
-        setState(open);
+		setState(open);
 
-        if (!open) props.handleClose(event, 0);
-    };
+		if (!open) props.handleClose(event, 0);
+	};
 
-    const handleAbreConfig = (event) => {
-        props.handleClose(event, 1);
-    };
+	const handleAbreConfig = (event) => {
+		props.handleClose(event, 1);
+	};
 
-    const handleAbrePlantillas = (event) => {
-        props.handleClose(event, 2);
-    };
+	const handleAbrePlantillas = (event) => {
+		props.handleClose(event, 2);
+	};
 
-    const handleAbreCalendarioMensual = (event) => {
-        props.handleClose(event, 3);
-    };
+	const handleAbreCalendarioMensual = (event) => {
+		props.handleClose(event, 3);
+	};
 
-    const list = () => (
-        <Box
-            sx={{
-                width: 220,
-                height: "100%",
-                bgcolor: "whitesmoke",
-            }}
-            role="presentation"
-            onClick={toggleDrawer(false)}
-            onKeyDown={toggleDrawer(false)}
-        >
-            <div className="AvatarContainer">
-                <AccountCircle sx={{ marginTop: 1, height: 40, width: 40 }} />
-                <Typography sx={{ fontFamily: "Open Sans", fontSize: 12 }}>
-                    {props.usuarioPQ.nombre}
-                </Typography>
-                <hr
-                    style={{
-                        color: "white",
-                        height: "2px",
-                        width: "100%",
-                        marginTop: 4,
-                    }}
-                />
-            </div>
+	const list = () => (
+		<Box
+			sx={{
+				width: 220,
+				height: "100%",
+				bgcolor: "#e5eaf5",
+			}}
+			role="presentation"
+			onClick={toggleDrawer(false)}
+			onKeyDown={toggleDrawer(false)}
+		>
+			<div className="AvatarContainer">
+				<AccountCircle sx={{ marginTop: 1, height: 40, width: 40 }} />
+				<Typography sx={{ fontFamily: "Open Sans", fontSize: 12 }}>
+					{props.usuarioPQ.nombre}
+				</Typography>
+				<hr
+					style={{
+						color: "white",
+						height: "2px",
+						width: "100%",
+						marginTop: 4,
+					}}
+				/>
+			</div>
 
-            <Divider />
-            <List dense={true}>
-                <ListItem
-                    key={"CalendarioMes"}
-                    disablePadding
-                    onClick={() => {
-                        handleAbreCalendarioMensual();
-                    }}
-                >
-                    <ListItemButton>
-                        <ListItemIcon>
-                            <CalendarIcon />
-                        </ListItemIcon>
-                        <ListItemText
-                            sx={{
-                                marginLeft: -2,
-                                fontFamily: "Open Sans",
-                                fontSize: 12,
-                            }}
-                            primary="Calendario mensual"
-                        />
-                    </ListItemButton>
-                </ListItem>
+			<Divider />
+			<List dense={true}>
+				<ListItem
+					key={"CalendarioMes"}
+					disablePadding
+					onClick={() => {
+						handleAbreCalendarioMensual();
+					}}
+				>
+					<ListItemButton>
+						<ListItemIcon>
+							<CalendarIcon />
+						</ListItemIcon>
+						<ListItemText
+							sx={{
+								marginLeft: -2,
+								fontFamily: "Open Sans",
+								fontSize: 12,
+							}}
+							primary="Calendario mensual"
+						/>
+					</ListItemButton>
+				</ListItem>
 
-                <ListItem
-                    key={"Plantillas"}
-                    disablePadding
-                    onClick={() => {
-                        handleAbrePlantillas();
-                    }}
-                >
-                    <ListItemButton>
-                        <ListItemIcon>
-                            <PlantillaIcon />
-                        </ListItemIcon>
-                        <ListItemText
-                            sx={{
-                                marginLeft: -2,
-                                fontFamily: "Open Sans",
-                                fontSize: 12,
-                            }}
-                            primary="Plantillas/Planificación"
-                        />
-                    </ListItemButton>
-                </ListItem>
+				<ListItem
+					key={"Plantillas"}
+					disablePadding
+					onClick={() => {
+						handleAbrePlantillas();
+					}}
+				>
+					<ListItemButton>
+						<ListItemIcon>
+							<PlantillaIcon />
+						</ListItemIcon>
+						<ListItemText
+							sx={{
+								marginLeft: -2,
+								fontFamily: "Open Sans",
+								fontSize: 12,
+							}}
+							primary="Plantillas/Planificación"
+						/>
+					</ListItemButton>
+				</ListItem>
 
-                <ListItem
-                    key={"config"}
-                    disablePadding
-                    onClick={() => {
-                        handleAbreConfig();
-                    }}
-                >
-                    <ListItemButton>
-                        <ListItemIcon>
-                            <ConfigIcon />
-                        </ListItemIcon>
-                        <ListItemText
-                            sx={{ marginLeft: -2 }}
-                            primary="Configuración"
-                        />
-                    </ListItemButton>
-                </ListItem>
-            </List>
-        </Box>
-    );
+				<ListItem
+					key={"config"}
+					disablePadding
+					onClick={() => {
+						handleAbreConfig();
+					}}
+				>
+					<ListItemButton>
+						<ListItemIcon>
+							<ConfigIcon />
+						</ListItemIcon>
+						<ListItemText sx={{ marginLeft: -2 }} primary="Configuración" />
+					</ListItemButton>
+				</ListItem>
+			</List>
+		</Box>
+	);
 
-    return (
-        <div>
-            <React.Fragment key="left">
-                <Drawer
-                    anchor={"left"}
-                    open={true}
-                    onClose={toggleDrawer(false)}
-                >
-                    {list("left")}
-                </Drawer>
-            </React.Fragment>
-        </div>
-    );
+	return (
+		<div>
+			<React.Fragment key="left">
+				<Drawer anchor={"left"} open={true} onClose={toggleDrawer(false)}>
+					{list("left")}
+				</Drawer>
+			</React.Fragment>
+		</div>
+	);
 }
