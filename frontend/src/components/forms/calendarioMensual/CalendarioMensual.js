@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import Box from "@mui/material/Box";
 import Modal from "@mui/material/Modal";
 
@@ -31,294 +31,325 @@ import { styled } from "@mui/material/styles";
 import { width } from "@mui/system";
 import dayjs from "dayjs";
 import CeldaTurno from "./CeldaTurno";
+import { AppContext } from "../../../context/appcontext";
 
 const diasSemana = [
-	"Lunes",
-	"Martes",
-	"Miércoles",
-	"Jueves",
-	"Viernes",
-	"Sábado",
-	"Domingo",
+    "Lunes",
+    "Martes",
+    "Miércoles",
+    "Jueves",
+    "Viernes",
+    "Sábado",
+    "Domingo",
 ];
 const turnos = ["Mañana", "Tarde"];
 
 const style = {
-	position: "absolute",
-	top: "50%",
-	left: "50%",
-	transform: "translate(-50%, -50%)",
-	width: "90%",
-	height: "95%",
-	bgcolor: "background.paper",
-	border: "2px solid #000",
-	boxShadow: 24,
-	pt: 2,
-	px: 4,
-	pb: 3,
+    position: "absolute",
+    top: "50%",
+    left: "50%",
+    transform: "translate(-50%, -50%)",
+    width: "90%",
+    height: "95%",
+    bgcolor: "background.paper",
+    border: "2px solid #000",
+    boxShadow: 24,
+    pt: 2,
+    px: 4,
+    pb: 3,
 };
 
 const color = "#225780";
 
 const StyledTableCellShort = styled(TableCell)(({ theme }) => ({
-	[`&.${tableCellClasses.head}`]: {
-		backgroundColor: "#225780",
-		color: theme.palette.common.white,
-		fontFamily: "Open Sans",
-	},
+    [`&.${tableCellClasses.head}`]: {
+        backgroundColor: "#225780",
+        color: theme.palette.common.white,
+        fontFamily: "Open Sans",
+    },
 }));
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
-	[`&.${tableCellClasses.head}`]: {
-		backgroundColor: "#225780",
-		color: theme.palette.common.white,
-		fontFamily: "Open Sans",
-	},
-	[`&.${tableCellClasses.body}`]: {
-		fontSize: 14,
-		borderLeft: "1px solid rgba(224, 224, 224, 1)",
-		height: 40,
-		padding: 0,
-		fontFamily: "Open Sans",
-	},
+    [`&.${tableCellClasses.head}`]: {
+        backgroundColor: "#225780",
+        color: theme.palette.common.white,
+        fontFamily: "Open Sans",
+    },
+    [`&.${tableCellClasses.body}`]: {
+        fontSize: 14,
+        borderLeft: "1px solid rgba(224, 224, 224, 1)",
+        height: 40,
+        padding: 0,
+        fontFamily: "Open Sans",
+    },
 }));
 
 const StyledTableRow = styled(TableRow)(({ theme }) => ({
-	"&:nth-of-type(odd)": {
-		backgroundColor: theme.palette.action.hover,
-	},
+    "&:nth-of-type(odd)": {
+        backgroundColor: theme.palette.action.hover,
+    },
 }));
 
 const StyledTableFixed = styled(TableCell)(({ theme }) => ({
-	[`&.${tableCellClasses.body}`]: {
-		backgroundColor: "#225780",
-		color: theme.palette.common.white,
-		height: 20,
-		fontSize: 12,
-		align: "center",
-	},
+    [`&.${tableCellClasses.body}`]: {
+        backgroundColor: "#225780",
+        color: theme.palette.common.white,
+        height: 20,
+        fontSize: 12,
+        align: "center",
+    },
 }));
 
 function CalendarioMensual(props) {
-	const [open, setOpen] = React.useState(true);
-	const [isLoading, setIsLoading] = React.useState(true);
-	const [actualiza, setActualiza] = React.useState(false);
-	const [valueMes, setValueMes] = React.useState(new dayjs());
-	const [ubicaciones, setUbicaciones] = React.useState([]);
-	const [arraySemanas, setArraySemanas] = React.useState([]);
-	const [inicioCalendario, setInicioCalendario] = React.useState("");
+    const { dispatch } = React.useContext(AppContext);
 
-	React.useEffect(() => {
-		const fetchUbicaciones = async () => {
-			await fetch(
-				"http://" +
-					process.env.REACT_APP_API_SERVER +
-					":" +
-					process.env.REACT_APP_API_PORT +
-					"/api/ubicaciones/" +
-					props.facility
-			)
-				.then((response) => response.json())
-				.then((data) => {
-					setUbicaciones(
-						data.filter((ub) => {
-							if (ub.ACTIVA === 1 && ub.SERVICIO === null) {
-								return ub;
-							}
-						})
-					);
-					setIsLoading(false);
-				});
-		};
-		fetchUbicaciones();
-	}, []);
+    const [open, setOpen] = React.useState(true);
+    const [isLoading, setIsLoading] = React.useState(true);
+    const [actualiza, setActualiza] = React.useState(false);
+    const [valueMes, setValueMes] = React.useState(new dayjs());
+    const [ubicaciones, setUbicaciones] = React.useState([]);
+    const [arraySemanas, setArraySemanas] = React.useState([]);
+    const [inicioCalendario, setInicioCalendario] = React.useState("");
 
-	React.useEffect(() => {
-		//'Determinar semanas del mes actual'
-		var diasMes = parseInt(valueMes.endOf("Month").format("DD"));
+    React.useEffect(() => {
+        const fetchUbicaciones = async () => {
+            await fetch(
+                "http://" +
+                    process.env.REACT_APP_API_SERVER +
+                    ":" +
+                    process.env.REACT_APP_API_PORT +
+                    "/api/ubicaciones/" +
+                    props.facility
+            )
+                .then((response) => response.json())
+                .then((data) => {
+                    setUbicaciones(
+                        data.filter((ub) => {
+                            if (ub.ACTIVA === 1 && ub.SERVICIO === null) {
+                                return ub;
+                            }
+                        })
+                    );
+                    dispatch({ type: "SET_UBICACIONES", payload: ubicaciones });
+                    setIsLoading(false);
+                    alert(ubicaciones);
+                });
+        };
+        fetchUbicaciones();
+    }, []);
 
-		if (parseInt(valueMes.startOf("Month").format("d")) === 0) {
-			diasMes = diasMes + 6;
-			setInicioCalendario(
-				valueMes.startOf("Month").add(-6, "day").format("DD/MM/YYYY")
-			);
-		} else {
-			diasMes = diasMes + parseInt(valueMes.startOf("Month").format("d")) - 1;
-			setInicioCalendario(
-				valueMes
-					.startOf("Month")
-					.add(-parseInt(valueMes.startOf("Month").format("d")) + 1, "day")
-					.format("DD/MM/YYYY")
-			);
-		}
+    React.useEffect(() => {
+        //'Determinar semanas del mes actual'
+        var diasMes = parseInt(valueMes.endOf("Month").format("DD"));
 
-		const semanas = Math.floor(diasMes / 7);
-		const resto = diasMes % 7 === 0 ? 0 : 1;
+        if (parseInt(valueMes.startOf("Month").format("d")) === 0) {
+            diasMes = diasMes + 6;
+            setInicioCalendario(
+                valueMes.startOf("Month").add(-6, "day").format("DD/MM/YYYY")
+            );
+        } else {
+            diasMes =
+                diasMes + parseInt(valueMes.startOf("Month").format("d")) - 1;
+            setInicioCalendario(
+                valueMes
+                    .startOf("Month")
+                    .add(
+                        -parseInt(valueMes.startOf("Month").format("d")) + 1,
+                        "day"
+                    )
+                    .format("DD/MM/YYYY")
+            );
+        }
 
-		var sArray = [];
-		for (var i = 1; i <= semanas + resto; i++) {
-			sArray.push(i);
-		}
+        const semanas = Math.floor(diasMes / 7);
+        const resto = diasMes % 7 === 0 ? 0 : 1;
 
-		setArraySemanas(sArray);
-	}, [valueMes]);
+        var sArray = [];
+        for (var i = 1; i <= semanas + resto; i++) {
+            sArray.push(i);
+        }
 
-	const handleClose = () => {
-		props.handleClose();
-	};
+        setArraySemanas(sArray);
+    }, [valueMes]);
 
-	const handleStartLoading = () => {
-		setIsLoading(true);
-	};
+    const handleClose = () => {
+        props.handleClose();
+    };
 
-	const handleEndLoading = () => {
-		setIsLoading(false);
-	};
+    const handleStartLoading = () => {
+        setIsLoading(true);
+    };
 
-	const handleActualiza = () => {
-		setActualiza(!actualiza);
-	};
+    const handleEndLoading = () => {
+        setIsLoading(false);
+    };
 
-	const DiadelCalendario = (s, d) => {
-		const d1 = dayjs(inicioCalendario, "DD/MM/YYYY");
+    const handleActualiza = () => {
+        setActualiza(!actualiza);
+    };
 
-		const d2 = d1.add(7 * s + d, "day");
-		return d2.format("DD/MM/YYYY");
-	};
+    const DiadelCalendario = (s, d) => {
+        const d1 = dayjs(inicioCalendario, "DD/MM/YYYY");
 
-	return (
-		<LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="es">
-			<React.Fragment>
-				<Modal
-					hideBackdrop
-					open={open}
-					onClose={(e) => handleClose(e)}
-					aria-labelledby="child-modal-title"
-					aria-describedby="child-modal-description"
-				>
-					<Box sx={style}>
-						<div className="tituloLoading">
-							<Typography
-								fontFamily="Open Sans"
-								fontSize={20}
-								fontWeight="bold"
-								color="#225780"
-								sx={{ marginRight: 2, marginTop: 0.8 }}
-							>
-								Calendario Quirúrgico Mensual:
-							</Typography>
+        const d2 = d1.add(7 * s + d, "day");
+        return d2.format("DD/MM/YYYY");
+    };
 
-							<DatePicker
-								onChange={(newValue) => {
-									setValueMes(newValue);
-								}}
-								value={valueMes}
-								disablePast
-								views={["month", "year"]}
-								renderInput={(params) => {
-									return (
-										<TextField
-											{...params}
-											sx={{
-												svg: { color },
-												input: { color },
-												label: { color },
-												fontFamily: "Open Sans",
-												fontSize: 20,
-												marginTop: -1,
-												marginBottom: 1,
-												width: 200,
-											}}
-										/>
-									);
-								}}
-							/>
+    return (
+        <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="es">
+            <React.Fragment>
+                <Modal
+                    hideBackdrop
+                    open={open}
+                    onClose={(e) => handleClose(e)}
+                    aria-labelledby="child-modal-title"
+                    aria-describedby="child-modal-description"
+                >
+                    <Box sx={style}>
+                        <div className="tituloLoading">
+                            <Typography
+                                fontFamily="Open Sans"
+                                fontSize={20}
+                                fontWeight="bold"
+                                color="#225780"
+                                sx={{ marginRight: 2, marginTop: 0.8 }}
+                            >
+                                Calendario Quirúrgico Mensual:
+                            </Typography>
 
-							{isLoading && (
-								<ReactLoading type="spin" color="navy" width={24} height={24} />
-							)}
-						</div>
+                            <DatePicker
+                                onChange={(newValue) => {
+                                    setValueMes(newValue);
+                                }}
+                                value={valueMes}
+                                disablePast
+                                views={["month", "year"]}
+                                renderInput={(params) => {
+                                    return (
+                                        <TextField
+                                            {...params}
+                                            sx={{
+                                                svg: { color },
+                                                input: { color },
+                                                label: { color },
+                                                fontFamily: "Open Sans",
+                                                fontSize: 20,
+                                                marginTop: -1,
+                                                marginBottom: 1,
+                                                width: 200,
+                                            }}
+                                        />
+                                    );
+                                }}
+                            />
 
-						<IconButton
-							aria-label="close"
-							onClick={(e) => handleClose(e)}
-							sx={{
-								position: "absolute",
-								right: 8,
-								top: 8,
-								color: (theme) => theme.palette.grey[500],
-							}}
-						>
-							<CloseIcon />
-						</IconButton>
+                            {isLoading && (
+                                <ReactLoading
+                                    type="spin"
+                                    color={color}
+                                    width={24}
+                                    height={24}
+                                    padding={4}
+                                />
+                            )}
+                        </div>
 
-						<div className="containerFull">
-							<TableContainer component={Paper}>
-								<Table
-									sx={{ Width: "100%" }}
-									aria-label="spanning table"
-									size="small"
-								>
-									<TableHead>
-										<TableRow>
-											{diasSemana.map((d) =>
-												d !== "Sábado" && d !== "Domingo" ? (
-													<StyledTableCell
-														key={d}
-														align="center"
-														width={"13%"}
-														colSpan={2}
-													>
-														{d}
-													</StyledTableCell>
-												) : (
-													<StyledTableCellShort
-														key={d}
-														align="center"
-														width={"4%"}
-														colSpan={2}
-													>
-														{d}
-													</StyledTableCellShort>
-												)
-											)}
-										</TableRow>
+                        <IconButton
+                            aria-label="close"
+                            onClick={(e) => handleClose(e)}
+                            sx={{
+                                position: "absolute",
+                                right: 8,
+                                top: 8,
+                                color: (theme) => theme.palette.grey[500],
+                            }}
+                        >
+                            <CloseIcon />
+                        </IconButton>
 
-										<TableRow>
-											{diasSemana.map((d) =>
-												turnos.map((t, index) => (
-													<StyledTableCell key={index} align="center">
-														{t}
-													</StyledTableCell>
-												))
-											)}
-										</TableRow>
-									</TableHead>
-									<TableBody>
-										{arraySemanas.map((s, indexS) => (
-											<TableRow key={indexS}>
-												{diasSemana.map((d, indexD) =>
-													turnos.map((t, indext) => (
-														<TableCell height={200} padding="none">
-															<CeldaTurno
-																turno={t}
-																valueMes={valueMes}
-																dia={DiadelCalendario(indexS, indexD)}
-															/>
-														</TableCell>
-													))
-												)}
-											</TableRow>
-										))}
-									</TableBody>
-								</Table>
-							</TableContainer>
-						</div>
-					</Box>
-				</Modal>
-			</React.Fragment>
-		</LocalizationProvider>
-	);
+                        <div className="containerFull">
+                            <TableContainer component={Paper}>
+                                <Table
+                                    sx={{ Width: "100%" }}
+                                    aria-label="spanning table"
+                                    size="small"
+                                >
+                                    <TableHead>
+                                        <TableRow>
+                                            {diasSemana.map((d) =>
+                                                d !== "Sábado" &&
+                                                d !== "Domingo" ? (
+                                                    <StyledTableCell
+                                                        key={d}
+                                                        align="center"
+                                                        width={"13%"}
+                                                        colSpan={2}
+                                                    >
+                                                        {d}
+                                                    </StyledTableCell>
+                                                ) : (
+                                                    <StyledTableCellShort
+                                                        key={d}
+                                                        align="center"
+                                                        width={"4%"}
+                                                        colSpan={2}
+                                                    >
+                                                        {d}
+                                                    </StyledTableCellShort>
+                                                )
+                                            )}
+                                        </TableRow>
+
+                                        <TableRow>
+                                            {diasSemana.map((d) =>
+                                                turnos.map((t, index) => (
+                                                    <StyledTableCell
+                                                        key={index}
+                                                        align="center"
+                                                    >
+                                                        {t}
+                                                    </StyledTableCell>
+                                                ))
+                                            )}
+                                        </TableRow>
+                                    </TableHead>
+                                    <TableBody>
+                                        {arraySemanas.map((s, indexS) => (
+                                            <TableRow key={indexS}>
+                                                {diasSemana.map((d, indexD) =>
+                                                    turnos.map((t, indext) => (
+                                                        <TableCell
+                                                            height={200}
+                                                            padding="none"
+                                                        >
+                                                            <CeldaTurno
+                                                                diaSemana={d}
+                                                                turno={t}
+                                                                valueMes={
+                                                                    valueMes
+                                                                }
+                                                                dia={DiadelCalendario(
+                                                                    indexS,
+                                                                    indexD
+                                                                )}
+                                                                ubicaciones={
+                                                                    ubicaciones
+                                                                }
+                                                            />
+                                                        </TableCell>
+                                                    ))
+                                                )}
+                                            </TableRow>
+                                        ))}
+                                    </TableBody>
+                                </Table>
+                            </TableContainer>
+                        </div>
+                    </Box>
+                </Modal>
+            </React.Fragment>
+        </LocalizationProvider>
+    );
 }
 
 export default CalendarioMensual;

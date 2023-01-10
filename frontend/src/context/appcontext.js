@@ -24,6 +24,12 @@ const AppReducer = (state, action) => {
                 ...state,
                 centros: action.payload,
             };
+        case "SET_UBICACIONES":
+            return {
+                ...state,
+                ubicaciones: action.payload,
+            };
+
         default:
             return state;
     }
@@ -39,6 +45,7 @@ const initialState = {
     },
     centros: centros,
     roles: ["ADMIN", "JEFE SERVICIO", "MEDICO", "ADMISION"],
+    ubicaciones: [],
 };
 
 export const AppContext = createContext();
@@ -52,6 +59,7 @@ export const AppProvider = (props) => {
                 usuarioPQ: state.usuarioPQ,
                 centros: state.centros,
                 roles: state.roles,
+                ubicaciones: state.ubicaciones,
                 dispatch,
             }}
         >
