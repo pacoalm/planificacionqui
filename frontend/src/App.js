@@ -20,7 +20,6 @@ function App() {
 				<div className="App">
 					<LoadData />
 					<PrimarySearchAppBar handleLoginOk={handleLoginOk} />
-					<div>ESTO ES UNA PRUEBA</div>
 				</div>
 			)}
 		</AppProvider>

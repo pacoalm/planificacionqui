@@ -1,69 +1,69 @@
 import { createContext, useReducer } from "react";
 
 const centros = [
-    {
-        codigo: "07",
-        descripcion: "Hospital San Juan de Dios Tenerife",
-        quirofanos: 5,
-        ambulatorio: true,
-        urpa: true,
-        preanestesia: true,
-        facility: 1900,
-    },
+	{
+		codigo: "07",
+		descripcion: "Hospital San Juan de Dios Tenerife",
+		quirofanos: 5,
+		ambulatorio: true,
+		urpa: true,
+		preanestesia: true,
+		facility: 1900,
+	},
 ];
 
 const AppReducer = (state, action) => {
-    switch (action.type) {
-        case "SET_USUARIOPQ":
-            return {
-                ...state,
-                usuarioPQ: action.payload,
-            };
-        case "SET_CENTROS":
-            return {
-                ...state,
-                centros: action.payload,
-            };
-        case "SET_UBICACIONES":
-            return {
-                ...state,
-                ubicaciones: action.payload,
-            };
+	switch (action.type) {
+		case "SET_USUARIOPQ":
+			return {
+				...state,
+				usuarioPQ: action.payload,
+			};
+		case "SET_CENTROS":
+			return {
+				...state,
+				centros: action.payload,
+			};
+		case "SET_LISTA_UBICACIONES":
+			return {
+				...state,
+				listaUbicaciones: action.payload,
+			};
 
-        default:
-            return state;
-    }
+		default:
+			return state;
+	}
 };
 
 const initialState = {
-    usurarioPQ: {
-        loginUser: "",
-        nombre: "",
-        codCentro: "",
-        email: "",
-        rol: "",
-    },
-    centros: centros,
-    roles: ["ADMIN", "JEFE SERVICIO", "MEDICO", "ADMISION"],
-    ubicaciones: [],
+	usurarioPQ: {
+		loginUser: "",
+		nombre: "",
+		codCentro: "",
+		email: "",
+		rol: "",
+	},
+	centros: centros,
+	roles: ["ADMIN", "JEFE SERVICIO", "MEDICO", "ADMISION"],
+	listaUbicaciones: [],
 };
 
 export const AppContext = createContext();
 
 export const AppProvider = (props) => {
-    const [state, dispatch] = useReducer(AppReducer, initialState);
+	const [state, dispatch] = useReducer(AppReducer, initialState);
 
-    return (
-        <AppContext.Provider
-            value={{
-                usuarioPQ: state.usuarioPQ,
-                centros: state.centros,
-                roles: state.roles,
-                ubicaciones: state.ubicaciones,
-                dispatch,
-            }}
-        >
-            {props.children}
-        </AppContext.Provider>
-    );
+	return (
+		<AppContext.Provider
+			value={{
+				usuarioPQ: state.usuarioPQ,
+				centros: state.centros,
+				roles: state.roles,
+				listaUbicaciones: state.listaUbicaciones,
+				dispatch,
+			}}
+		>
+			{props.children}
+		</AppContext.Provider>
+	);
 };
